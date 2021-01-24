@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/extension/widget_extension.dart';
-import 'package:mesa_news/core/util/color_util.dart';
-import 'package:mesa_news/ui/app_config.dart';
+import 'package:mesa_news/core/constant.dart';
 
 class LoadingView extends StatelessWidget {
   final String text;

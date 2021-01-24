@@ -4,12 +4,16 @@ import 'package:mesa_news/ui/page/auth/login_page.dart';
 import 'package:mesa_news/ui/page/auth/register_page.dart';
 import 'package:mesa_news/ui/page/feed_new_page.dart';
 import 'package:mesa_news/ui/page/feed_page.dart';
+import 'package:mesa_news/ui/page/filter_page.dart';
+import 'package:mesa_news/ui/page/splash_page.dart';
 
 class MesaRouter {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
+        return MaterialPageRoute(builder: (_) => SplashPage());
+      case '/login':
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/auth':
         return MaterialPageRoute(builder: (_) => LoginEmailPage());
@@ -19,6 +23,8 @@ class MesaRouter {
         return MaterialPageRoute(builder: (_) => FeedPage());
       case '/feed/new':
         return MaterialPageRoute(builder: (_) => FeedNewPage());
+      case '/filter':
+        return MaterialPageRoute(builder: (_) => FilterPage());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

@@ -22,12 +22,17 @@ dependencies:
   dio: ^3.0.10
   crypto: ^2.1.5
 
+  flutter_facebook_login: ^3.0.0
+
   shared_preferences: ^0.5.12+4
 
   email_validator: ^1.0.5
   keyboard_visibility: ^0.5.6
   date_format: ^1.0.9
   timeago: ^2.0.29
+  url_launcher: ^5.7.10
+  share: ^0.6.5+4
+  cached_network_image: ^2.5.0
 
 dev_dependencies:
   flutter_test:

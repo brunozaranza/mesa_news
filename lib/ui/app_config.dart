@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mesa_news/core/util/color_util.dart';
+import 'package:mesa_news/core/constant.dart';
 
 class AppConfig {
 

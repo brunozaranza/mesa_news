@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/model/api_response.dart';
 import 'package:mesa_news/core/model/user.dart';
@@ -9,9 +10,13 @@ import 'package:mesa_news/core/viewmodel/iauth_viewmodel.dart';
 import 'package:mesa_news/core/extension/string_extension.dart';
 
 class AuthViewModel implements IAuthViewModel {
+
+  @override
+  void dispose() {}
+
   @override
   Future<String> checkUserExist() async {
-    String token = await getToken();
+    String token = await getSavedToken();
     if (token.isNotEmpty) {
       GetIt.I<UserStore>().setUser(User(token: token));
       navigateReplaceAllTo(route: "/feed");
@@ -61,5 +66,34 @@ class AuthViewModel implements IAuthViewModel {
   }
 
   @override
-  void dispose() {}
+  String emailValidator(email) {
+    final bool isEmailValid = EmailValidator
+        .validate(email);
+
+    return isEmailValid ? null : "Digite um e-mail válido";
+  }
+
+  @override
+  String passwordValidator(password) {
+    return password.isEmpty ? "Digite a senha" : null;
+  }
+
+  @override
+  String registerConfirmPasswordValidator(String p1, String p2) {
+    if (p1.isEmpty) return "Repita a senha";
+
+    return (p1 != p2) ?"Senhas diferentes" : null;
+  }
+
+  @override
+  String registerPasswordValidator(String password) {
+    if (password.isEmpty) return "Digite a senha";
+
+    return (password.length < 6) ? "Senha deve 6 dígitos ou mais" : null;
+  }
+
+  @override
+  String registerNameValidator(String name) {
+    return name.isEmpty ? "Digite seu nome" : null;
+  }
 }

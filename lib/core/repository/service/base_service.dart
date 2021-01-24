@@ -35,8 +35,7 @@ Future<ApiResponse> getDataList(
       return ApiResponse.error(response.statusMessage);
     }
   } on DioError catch (e) {
-    return ApiResponse.error(
-        ApiError.fromJson(e.response.data).errors.first.message);
+    return _dioError(e.response.data);
   }
 }
 
@@ -58,7 +57,18 @@ Future<ApiResponse> postData({String endpoint, dynamic data}) async {
       return ApiResponse.error(response.statusMessage);
     }
   } on DioError catch (e) {
+    return _dioError(e.response.data);
+  }
+}
+
+ApiResponse _dioError (Map<String, dynamic> map) {
+  if(map.containsKey("errors")) {
     return ApiResponse.error(
-        ApiError.fromJson(e.response.data).errors.first.message);
+        ApiError
+            .fromJson(map).errors.first.message);
+  } else {
+    return ApiResponse.error(ApiErrorItem
+        .fromJson(map)
+        .message);
   }
 }

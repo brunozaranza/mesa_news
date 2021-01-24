@@ -1,7 +1,8 @@
 import 'package:mesa_news/core/model/api_response.dart';
 import 'package:mesa_news/core/model/user.dart';
+import 'package:mesa_news/core/viewmodel/ibase_viewmodel.dart';
 
-abstract class IAuthViewModel {
+abstract class IAuthViewModel extends IBaseViewModel {
 
   Future<String> checkUserExist();
 
@@ -10,6 +11,13 @@ abstract class IAuthViewModel {
   void onFacebookButtonPressed();
 
   void onRegisterButtonPressed();
+
+  String emailValidator(String email);
+  String passwordValidator(String password);
+
+  String registerNameValidator(String name);
+  String registerPasswordValidator(String password);
+  String registerConfirmPasswordValidator(String p1, String p2);
 
   Future<ApiResponse<User>> onLoginDoneButtonPressed({
     String email,
@@ -22,6 +30,4 @@ abstract class IAuthViewModel {
     String password,
     String birthday,
   });
-
-  void dispose();
 }

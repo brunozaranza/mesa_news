@@ -4,9 +4,12 @@ class ApiError {
   ApiError({this.errors});
 
   ApiError.fromJson(Map<String, dynamic> map) {
-    var e = map['errors'] as List;
+    if(map.containsKey('errors')) {
+      var e = map['errors'] as List;
 
-    this.errors = e.map((i) => ApiErrorItem.fromJson(i)).cast<ApiErrorItem>().toList();
+      this.errors = e.map((i) => ApiErrorItem.fromJson(i))
+          .cast<ApiErrorItem>().toList();
+    }
   }
 }
 

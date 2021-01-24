@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/util/dialog_util.dart';
@@ -62,11 +61,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 textInputAction: TextInputAction.next,
                 focusNode: _focusName,
                 nextFocus: _focusEmail,
-                validator: (name) {
-                  if (name.isEmpty) return "Digite seu nome";
-                  return null;
-                },
-              ).spaceTo(bottom: 10),
+                validator: (name) => _viewModel.registerNameValidator(name),
+              ).paddingTo(bottom: 10),
               MesaTextField(
                 label: 'E-mail',
                 controller: _textEditingControllerEmail,
@@ -74,13 +70,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 textInputAction: TextInputAction.next,
                 focusNode: _focusEmail,
                 nextFocus: _focusPassword,
-                validator: (email) {
-                  final bool isEmailValid =
-                      EmailValidator.validate(_textEditingControllerEmail.text);
-
-                  return isEmailValid ? null : "Digite um e-mail válido";
-                },
-              ).spaceTo(bottom: 10),
+                validator: (email) => _viewModel.emailValidator(email),
+              ).paddingTo(bottom: 10),
               MesaTextField(
                 label: 'Senha',
                 controller: _textEditingControllerPassword,
@@ -89,15 +80,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 textInputAction: TextInputAction.next,
                 focusNode: _focusPassword,
                 nextFocus: _focusPasswordConfirm,
-                validator: (password) {
-                  if (password.isEmpty) return "Digite a senha";
-
-                  if (password.length < 6)
-                    return "Senha deve 6 dígitos ou mais";
-
-                  return null;
-                },
-              ).spaceTo(bottom: 10),
+                validator: (password) =>
+                    _viewModel.registerPasswordValidator(password),
+              ).paddingTo(bottom: 10),
               MesaTextField(
                 label: 'Confirmar senha',
                 controller: _textEditingControllerPasswordConfirm,
@@ -106,16 +91,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 password: true,
                 focusNode: _focusPasswordConfirm,
                 nextFocus: _focusBirthday,
-                validator: (password) {
-                  if (password.isEmpty) return "Repita a senha";
-
-                  if (_textEditingControllerPassword.text !=
-                      _textEditingControllerPasswordConfirm.text)
-                    return "Senhas diferentes";
-
-                  return null;
-                },
-              ).spaceTo(bottom: 10),
+                validator: (password) =>
+                    _viewModel.registerConfirmPasswordValidator(
+                        password, _textEditingControllerPassword.text),
+              ).paddingTo(bottom: 10),
               MesaTextField(
                 label: 'Data de nascimento - Opcional',
                 controller: _textEditingControllerBirthday,

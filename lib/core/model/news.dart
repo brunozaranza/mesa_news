@@ -31,6 +31,7 @@ class NewsItem {
   bool highlight;
   String url;
   String imageUrl;
+  bool favorite;
 
   NewsItem({
     this.title,
@@ -41,6 +42,7 @@ class NewsItem {
     this.highlight,
     this.url,
     this.imageUrl,
+    this.favorite = false
   });
 
   NewsItem.fromJson(Map<String, dynamic> map) {

@@ -12,4 +12,8 @@ abstract class _UserBase with Store {
   setUser(User _user) {
     this.user = _user;
   }
+
+  dispose() {
+    user = null;
+  }
 }

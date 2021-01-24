@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mesa_news/core/util/color_util.dart';
+import 'package:mesa_news/core/constant.dart';
 import 'package:mesa_news/core/viewmodel/iauth_viewmodel.dart';
 import 'package:mesa_news/ui/custom/mesa_button.dart';
 import 'package:mesa_news/ui/view/loading_view.dart';
 
 class LoginPage extends StatelessWidget {
+
   _img() {
     return Expanded(
       child: Column(

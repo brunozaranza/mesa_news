@@ -1,8 +1,7 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mesa_news/core/util/color_util.dart';
+import 'package:mesa_news/core/constant.dart';
 import 'package:mesa_news/core/util/dialog_util.dart';
 import 'package:mesa_news/core/viewmodel/iauth_viewmodel.dart';
 import 'package:mesa_news/ui/custom/mesa_button.dart';
@@ -74,12 +73,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                 textInputAction: TextInputAction.next,
                 focusNode: _focusEmail,
                 nextFocus: _focusPassword,
-                validator: (email) {
-                  final bool isEmailValid = EmailValidator
-                      .validate(_textEditingControllerEmail.text);
-
-                  return isEmailValid ? null : "Digite um e-mail válido";
-                },
+                validator: (email) => _viewModel.emailValidator(email),
               ),
               SizedBox(height: 10.0),
               MesaTextField(
@@ -90,12 +84,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                 icon: Icons.lock,
                 focusNode: _focusPassword,
                 onFieldSubmitted: _onLoginButtonPressed,
-                validator: (password) {
-                  if (password.isEmpty)
-                    return "Digite a senha";
-
-                  return null;
-                },
+                validator: (password) => _viewModel.passwordValidator(password),
               ),
               isRequesting ? LoadingView(text: "") : MesaButton(
                 title: "Login",
@@ -145,7 +134,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
           textColor: colorPrimary,
           borderColor: colorPrimary,
           backgroundColor: Colors.white,
-        ).spaceTo(bottom: 32),
+        ).paddingTo(bottom: 32),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
