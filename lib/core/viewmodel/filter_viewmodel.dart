@@ -9,7 +9,13 @@ import 'package:mesa_news/core/viewmodel/ifilter_viewmodel.dart';
 
 class FilterViewModel implements IFilterViewModel {
   @override
-  String get dateSelected => GetIt.I<FilterStore>().date;
+  String get dateSelected {
+    if(GetIt.I<FilterStore>().date == null) {
+      GetIt.I<FilterStore>().setDate("Todas");
+    }
+
+    return GetIt.I<FilterStore>().date;
+  }
 
   @override
   List<Widget> getDateItems() {

@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/model/api_response.dart';
 import 'package:mesa_news/core/model/user.dart';
 import 'package:mesa_news/core/repository/database/database.dart';
-import 'package:mesa_news/core/repository/service/auth_service.dart';
 import 'package:mesa_news/core/repository/service/iauth_service.dart';
 import 'package:mesa_news/core/store/user_store.dart';
 import 'package:mesa_news/core/util/navigator_util.dart';
