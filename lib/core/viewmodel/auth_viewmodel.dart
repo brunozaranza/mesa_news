@@ -3,14 +3,15 @@ import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/model/api_response.dart';
 import 'package:mesa_news/core/model/user.dart';
 import 'package:mesa_news/core/repository/database/database.dart';
+import 'package:mesa_news/core/repository/service/auth_service.dart';
 import 'package:mesa_news/core/repository/service/iauth_service.dart';
 import 'package:mesa_news/core/store/user_store.dart';
 import 'package:mesa_news/core/util/navigator_util.dart';
 import 'package:mesa_news/core/viewmodel/iauth_viewmodel.dart';
 import 'package:mesa_news/core/extension/string_extension.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class AuthViewModel implements IAuthViewModel {
-
   @override
   void dispose() {}
 
@@ -29,9 +30,58 @@ class AuthViewModel implements IAuthViewModel {
     navigateTo(route: '/auth');
   }
 
+  _openFeed(ApiResponse response) {
+    if(response.success) {
+      GetIt.I<UserStore>().setUser(response.result);
+      saveToken(response.result.token);
+      navigateReplaceAllTo(route: '/feed');
+    }
+  }
+
   @override
-  void onFacebookButtonPressed() {
-    print("facebook");
+  Future<ApiResponse<User>> onFacebookButtonPressed() async {
+    var login = FacebookLogin();
+    login.loginBehavior = FacebookLoginBehavior.webViewOnly;
+
+    var result = await login.logIn(['email']);
+
+    ApiResponse<User> response;
+
+    switch (result.status) {
+      case FacebookLoginStatus.error:
+        response = ApiResponse.error("Erro de autenticação");
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        response = ApiResponse.error("");
+        break;
+      case FacebookLoginStatus.loggedIn:
+        ApiResponse<User> fbResponse = await GetIt.I<IAuthService>()
+            .getFBProfile(token: result.accessToken.token);
+        response = ApiResponse.success(fbResponse.result);
+        break;
+      default:
+        response = ApiResponse.error("Erro desconhecido");
+        break;
+    }
+
+    if (response.success) {
+      onLoginDoneButtonPressed(
+          email: response.result.email, password: response.result.password).then((apiLogin) {
+        if (apiLogin.success) {
+          _openFeed(apiLogin);
+        }
+        else {
+          onRegisterDoneButtonPressed(
+              name: response.result.name,
+              email: response.result.email,
+              password: response.result.password).then((apiRegister) {
+                _openFeed(apiRegister);
+          });
+        }
+      });
+    }
+
+    return response;
   }
 
   @override
@@ -47,11 +97,7 @@ class AuthViewModel implements IAuthViewModel {
     ApiResponse<User> response = await GetIt.I<IAuthService>()
         .signIn(email: email, password: password.md5());
 
-    if (response.success) {
-      GetIt.I<UserStore>().setUser(response.result);
-      saveToken(response.result.token);
-      navigateReplaceAllTo(route: '/feed');
-    }
+    _openFeed(response);
 
     return response;
   }
@@ -67,8 +113,7 @@ class AuthViewModel implements IAuthViewModel {
 
   @override
   String emailValidator(email) {
-    final bool isEmailValid = EmailValidator
-        .validate(email);
+    final bool isEmailValid = EmailValidator.validate(email);
 
     return isEmailValid ? null : "Digite um e-mail válido";
   }
@@ -82,7 +127,7 @@ class AuthViewModel implements IAuthViewModel {
   String registerConfirmPasswordValidator(String p1, String p2) {
     if (p1.isEmpty) return "Repita a senha";
 
-    return (p1 != p2) ?"Senhas diferentes" : null;
+    return (p1 != p2) ? "Senhas diferentes" : null;
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:mesa_news/core/model/api_error.dart';
 import 'package:mesa_news/core/model/api_response.dart';
@@ -50,6 +52,23 @@ Future<ApiResponse> postData({String endpoint, dynamic data}) async {
         headers: _headers,
       ),
     );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return ApiResponse.success(response.data);
+    } else {
+      return ApiResponse.error(response.statusMessage);
+    }
+  } on DioError catch (e) {
+    return _dioError(e.response.data);
+  }
+}
+
+Future<ApiResponse> getFacebookProfile({String token}) async {
+  try {
+    var dio = Dio();
+
+    final response = await dio.get(
+        'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$token');
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return ApiResponse.success(response.data);

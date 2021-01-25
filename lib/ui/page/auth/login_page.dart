@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/constant.dart';
+import 'package:mesa_news/core/model/api_response.dart';
+import 'package:mesa_news/core/model/user.dart';
+import 'package:mesa_news/core/util/dialog_util.dart';
 import 'package:mesa_news/core/viewmodel/iauth_viewmodel.dart';
 import 'package:mesa_news/ui/custom/mesa_button.dart';
 import 'package:mesa_news/ui/view/loading_view.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  IAuthViewModel _viewModel;
+  bool isFacebookLoading = false;
 
   _img() {
     return Expanded(
@@ -29,21 +39,29 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _buttons() {
-    IAuthViewModel viewModel = GetIt.I<IAuthViewModel>();
+  _onFacebookButtonPressed() async {
+    setState(() => isFacebookLoading = true);
+    ApiResponse<User> response = await _viewModel.onFacebookButtonPressed();
+    if (!response.success) {
+      if (response.msg.isNotEmpty)
+        showMessageDialog(context: context, msg: response.msg);
+    }
+    setState(() => isFacebookLoading = false);
+  }
 
+  _buttons() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        MesaButton(
+        isFacebookLoading ? LoadingView(backgroundColor: Colors.white,) : MesaButton(
           title: "Entrar com facebook",
-          onTap: viewModel.onFacebookButtonPressed,
+          onTap: () => _onFacebookButtonPressed(),
           textColor: colorLink,
           backgroundColor: Colors.white,
         ),
         MesaButton(
           title: "Entrar com e-mail",
-          onTap: viewModel.onEmailButtonPressed,
+          onTap: _viewModel.onEmailButtonPressed,
         ),
         SizedBox(height: 32),
         Padding(
@@ -53,7 +71,7 @@ class LoginPage extends StatelessWidget {
             children: [
               Text("Não tenho conta. ", style: TextStyle(color: Colors.white)),
               InkWell(
-                onTap: viewModel.onRegisterButtonPressed,
+                onTap: _viewModel.onRegisterButtonPressed,
                 child: Text("Cadastrar",
                     style: TextStyle(
                         color: colorLink, fontWeight: FontWeight.bold)),
@@ -67,6 +85,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _viewModel = GetIt.I<IAuthViewModel>();
+
     return FutureBuilder(
         future: GetIt.I<IAuthViewModel>().checkUserExist(),
         builder: (_, snap) {

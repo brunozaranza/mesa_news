@@ -8,8 +8,6 @@ abstract class IAuthViewModel extends IBaseViewModel {
 
   void onEmailButtonPressed();
 
-  void onFacebookButtonPressed();
-
   void onRegisterButtonPressed();
 
   String emailValidator(String email);
@@ -18,6 +16,8 @@ abstract class IAuthViewModel extends IBaseViewModel {
   String registerNameValidator(String name);
   String registerPasswordValidator(String password);
   String registerConfirmPasswordValidator(String p1, String p2);
+
+  Future<ApiResponse<User>> onFacebookButtonPressed();
 
   Future<ApiResponse<User>> onLoginDoneButtonPressed({
     String email,

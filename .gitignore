@@ -32,6 +32,8 @@
 .pub/
 /build/
 
+strings.xml
+
 pubspec.lock
 
 # Web related
