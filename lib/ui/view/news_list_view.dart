@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/model/api_response.dart';
 import 'package:mesa_news/core/model/news.dart';
 import 'package:mesa_news/core/store/filter_store.dart';
-import 'package:mesa_news/core/viewmodel/inews_viewmodel.dart';
 import 'package:mesa_news/core/extension/widget_extension.dart';
 import 'package:mesa_news/core/extension/text_extension.dart';
+import 'package:mesa_news/core/viewmodel/news_viewmodel.dart';
+import 'package:mesa_news/locator.dart';
 import 'package:mesa_news/ui/view/loading_view.dart';
 import 'package:mesa_news/ui/view/news_list_item_view.dart';
 
@@ -16,7 +16,8 @@ class NewsListView extends StatefulWidget {
 }
 
 class _NewsListViewState extends State<NewsListView> {
-  INewsViewModel _viewModel;
+
+  NewsViewModel _viewModel;
 
   _listView() {
     return _viewModel.news.length == 0
@@ -25,7 +26,7 @@ class _NewsListViewState extends State<NewsListView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(GetIt.I<FilterStore>().isJustFavorites
+                Text(getServiceLocator<FilterStore>().isJustFavorites
                     ? "Você não salvou nenhuma notícia ainda. :("
                     : "Não há notícias para exibir"),
               ],
@@ -43,7 +44,7 @@ class _NewsListViewState extends State<NewsListView> {
 
   @override
   Widget build(BuildContext context) {
-    _viewModel = GetIt.I<INewsViewModel>();
+    _viewModel = getServiceLocator<NewsViewModel>();
 
     return Observer(builder: (_) {
       return Column(
@@ -51,7 +52,7 @@ class _NewsListViewState extends State<NewsListView> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            GetIt.I<FilterStore>().isJustFavorites
+            getServiceLocator<FilterStore>().isJustFavorites
                 ? "Minhas favoritas"
                 : "Últimas notícias",
           ).h1().paddingTo(left: 16, bottom: 10, top: 16),

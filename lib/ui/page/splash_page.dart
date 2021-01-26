@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/constant.dart';
 import 'package:mesa_news/core/util/navigator_util.dart';
-import 'package:mesa_news/core/viewmodel/iauth_viewmodel.dart';
+import 'package:mesa_news/core/viewmodel/auth_viewmodel.dart';
+import 'package:mesa_news/locator.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void navigationPage() async {
-    String userExist = await GetIt.I<IAuthViewModel>().checkUserExist();
+    String userExist = await getServiceLocator<AuthViewModel>().checkUserExist();
     if(userExist.isEmpty) navigateReplaceAllTo(route: "/login");
   }
 

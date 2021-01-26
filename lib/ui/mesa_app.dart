@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/keyboard_behavior.dart';
+import 'package:mesa_news/locator.dart';
 import 'package:mesa_news/ui/app_config.dart';
 import 'package:mesa_news/ui/router.dart';
 
@@ -9,7 +9,7 @@ class MesaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     setupKeyboardBehavior();
 
-    AppConfig appConfig = GetIt.I<AppConfig>();
+    AppConfig appConfig = getServiceLocator<AppConfig>();
 
     return MaterialApp(
       title: appConfig.title,

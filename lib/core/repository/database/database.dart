@@ -1,53 +1,56 @@
+import 'package:mesa_news/core/repository/database/database_contract.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final String tokenKey = "token";
-final String favoriteKey = "favoriteList";
-final String dateKey = "dateFilter";
+class Database implements DatabaseContract {
 
-void saveToken(String token) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString(tokenKey, token);
-}
+  SharedPreferences _shared;
 
-Future<String> getSavedToken() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString(tokenKey) == null ? ""
-      : prefs.getString(tokenKey);
+  Future<SharedPreferences> getSharedInstance() async {
+    if (_shared == null) _shared = await SharedPreferences.getInstance();
+    return _shared;
+  }
 
-  return token;
-}
+  @override
+  void saveListString(String key, List<String> value) async {
+    (await getSharedInstance()).setStringList(key, value);
+  }
 
-void saveFavoriteNew(String favoriteNew) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String> list = await getSavedFavoriteNews();
-  list.add(favoriteNew);
-  prefs.setStringList(favoriteKey, list);
-}
+  @override
+  void saveStatus(String key, bool value) async {
+    (await getSharedInstance()).setBool(key, value);
+  }
 
-void deleteFavoriteNew(String favoriteNew) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String> list = await getSavedFavoriteNews();
-  list.remove(list.where((element) => element == favoriteNew).first);
-  prefs.setStringList(favoriteKey, list);
-}
+  @override
+  void saveString(String key, String value) async {
+    (await getSharedInstance()).setString(key, value);
+  }
 
-Future<List<String>> getSavedFavoriteNews() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  List<String> list = prefs.getStringList(favoriteKey) == null ? List<String>()
-      : prefs.getStringList(favoriteKey);
+  @override
+  void saveStringToList(String key, String value) async {
+    List<String> list = await getSavedListString(key);
+    list.add(value);
+    (await getSharedInstance()).setStringList(key, list);
+  }
 
-  return list;
-}
+  @override
+  Future<List<String>> getSavedListString(String key) async {
+    return (await getSharedInstance()).getStringList(key)?? List<String>();
+  }
 
-void saveDateFilter(String date) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString(dateKey, date);
-}
+  @override
+  Future<String> getSavedString(String key) async {
+    return (await getSharedInstance()).getString(key)?? "";
+  }
 
-Future<String> getSavedDateFilter() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String date = prefs.getString(dateKey) == null ? "Todas"
-      : prefs.getString(dateKey);
+  @override
+  void deleteStringFromSavedList(String key, String value) async {
+    List<String> list = await getSavedListString(key);
+    list.remove(list.where((element) => element == value).first);
+    saveListString(key, list);
+  }
 
-  return date;
+  @override
+  Future<bool> getStatus(String key) async {
+    return (await getSharedInstance()).getBool(key);
+  }
 }

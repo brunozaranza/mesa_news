@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/constant.dart';
 import 'package:mesa_news/core/util/dialog_util.dart';
-import 'package:mesa_news/core/viewmodel/iauth_viewmodel.dart';
+import 'package:mesa_news/core/viewmodel/auth_viewmodel.dart';
+import 'package:mesa_news/locator.dart';
 import 'package:mesa_news/ui/custom/mesa_button.dart';
 import 'package:mesa_news/ui/custom/mesa_textfield.dart';
 import 'package:mesa_news/core/store/keyboard_store.dart';
@@ -16,7 +16,6 @@ class LoginEmailPage extends StatefulWidget {
 }
 
 class _LoginEmailPageState extends State<LoginEmailPage> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _textEditingControllerEmail = TextEditingController();
   final _textEditingControllerPassword = TextEditingController();
@@ -25,7 +24,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
 
   bool isRequesting = false;
 
-  IAuthViewModel _viewModel;
+  AuthViewModel _viewModel;
 
   _appBar() {
     return AppBar(
@@ -41,13 +40,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
   _body() {
     return Observer(
       builder: (_) {
-        return Stack(
-          children: [
-            Container(color: Colors.white),
-            _form(),
-            GetIt.I<KeyboardStore>().keyboardState ? Container() : _bottom(),
-          ],
-        ).paddingAll(16);
+        return _form();
       },
     );
   }
@@ -86,29 +79,35 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                 onFieldSubmitted: _onLoginButtonPressed,
                 validator: (password) => _viewModel.passwordValidator(password),
               ),
-              isRequesting ? LoadingView(text: "") : MesaButton(
-                title: "Login",
-                onTap: _onLoginButtonPressed,
-              ),
+              isRequesting
+                  ? LoadingView(text: "")
+                  : MesaButton(
+                      title: "Login",
+                      onTap: _onLoginButtonPressed,
+                    ),
+              getServiceLocator<KeyboardStore>().keyboardState
+                  ? Container()
+                  : _bottom(),
             ],
           ),
-        ),
+        ).paddingAll(16),
       ),
     );
   }
 
   _onLoginButtonPressed() {
-    if(_formKey.currentState.validate()) {
-
+    if (_formKey.currentState.validate()) {
       setState(() => isRequesting = true);
 
-      _viewModel.onLoginDoneButtonPressed(
+      _viewModel
+          .onLoginDoneButtonPressed(
         email: _textEditingControllerEmail.text,
         password: _textEditingControllerPassword.text,
-      ).then((response) {
+      )
+          .then((response) {
         setState(() => isRequesting = false);
 
-        if(!response.success) {
+        if (!response.success) {
           showMessageDialog(context: context, msg: response.msg);
         }
       });
@@ -117,7 +116,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
 
   _img() {
     return Image(
-      height: 130.0,
+      height: (130 / MediaQuery.of(context).devicePixelRatio) * 2.3,
       image: AssetImage('assets/images/register.png'),
       fit: BoxFit.scaleDown,
     ).paddingAll(40);
@@ -125,6 +124,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
 
   _bottom() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -142,9 +142,8 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
             InkWell(
               onTap: _viewModel.onRegisterButtonPressed,
               child: Text("Cadastrar",
-                  style: TextStyle(
-                      color: colorLink,
-                      fontWeight: FontWeight.bold)),
+                  style:
+                      TextStyle(color: colorLink, fontWeight: FontWeight.bold)),
             )
           ],
         ).paddingAll(8),
@@ -163,8 +162,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    _viewModel = GetIt.I<IAuthViewModel>();
+    _viewModel = getServiceLocator<AuthViewModel>();
 
     return Scaffold(
       appBar: _appBar(),

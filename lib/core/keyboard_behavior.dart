@@ -1,8 +1,8 @@
 import 'package:mesa_news/core/store/keyboard_store.dart';
-import 'package:get_it/get_it.dart';
+import 'package:mesa_news/locator.dart';
 
 void setupKeyboardBehavior() {
-  KeyboardStore store = GetIt.I<KeyboardStore>();
+  KeyboardStore store = getServiceLocator<KeyboardStore>();
 
   store.setKeyboardState(store.keyboardVisibility.isKeyboardVisible);
   store.setKeyboardVisibilitySubscriberId(

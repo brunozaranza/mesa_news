@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/model/news.dart';
-import 'package:mesa_news/core/viewmodel/inews_viewmodel.dart';
+import 'package:mesa_news/core/viewmodel/news_viewmodel.dart';
+import 'package:mesa_news/locator.dart';
 import 'package:mesa_news/ui/view/favorite_button_view.dart';
 import 'package:mesa_news/core/extension/string_extension.dart';
 import 'package:mesa_news/core/extension/widget_extension.dart';
@@ -16,7 +16,8 @@ class NewsListItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    INewsViewModel viewModel = GetIt.I<INewsViewModel>();
+
+    NewsViewModel viewModel = getServiceLocator<NewsViewModel>();
 
     return InkWell(
       onTap: () => viewModel.onNewItemPressed(item),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/model/news.dart';
-import 'package:mesa_news/core/repository/database/database.dart';
+import 'package:mesa_news/core/repository/database/shared.dart';
 import 'package:mesa_news/core/store/news_store.dart';
+import 'package:mesa_news/locator.dart';
 
 class FavoriteButtonView extends StatelessWidget {
   final NewsItem item;
@@ -11,7 +11,7 @@ class FavoriteButtonView extends StatelessWidget {
   FavoriteButtonView(this.item, {this.onPressed});
 
   _onFavoriteButtonPressed(NewsItem item) {
-    GetIt.I<NewsStore>().onMarked(item);
+    getServiceLocator<NewsStore>().onMarked(item);
     if (!item.favorite) {
       saveFavoriteNew(item.title);
     }

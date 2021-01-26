@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'package:mesa_news/core/model/api_response.dart';
 import 'package:mesa_news/core/model/user.dart';
 import 'package:mesa_news/core/repository/service/base_service.dart';
-import 'package:mesa_news/core/repository/service/iauth_service.dart';
 import 'package:mesa_news/core/extension/string_extension.dart';
 
-class AuthService implements IAuthService {
-  @override
+class AuthService {
+
   Future<ApiResponse<User>> signIn({String email, String password}) async {
     Map<String, String> body = {'email': email, 'password': password};
 
@@ -22,7 +21,6 @@ class AuthService implements IAuthService {
     }
   }
 
-  @override
   Future<ApiResponse<User>> signUp(
       {String name, String email, String password}) async {
     Map<String, String> body = {
@@ -43,7 +41,6 @@ class AuthService implements IAuthService {
     }
   }
 
-  @override
   Future<ApiResponse<User>> getFBProfile({String token}) async {
     ApiResponse response = await getFacebookProfile(token: token);
 

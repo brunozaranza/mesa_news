@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/constant.dart';
 import 'package:mesa_news/core/util/navigator_util.dart';
-import 'package:mesa_news/core/viewmodel/ifilter_viewmodel.dart';
+import 'package:mesa_news/core/viewmodel/filter_viewmodel.dart';
+import 'package:mesa_news/locator.dart';
 
 class FilterPage extends StatefulWidget {
   @override
@@ -11,7 +11,8 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
-  IFilterViewModel _viewModel;
+
+  FilterViewModel _viewModel;
 
   _appBar() {
     return AppBar(
@@ -109,7 +110,7 @@ class _FilterPageState extends State<FilterPage> {
 
   @override
   Widget build(BuildContext context) {
-    _viewModel = GetIt.I<IFilterViewModel>();
+    _viewModel = getServiceLocator<FilterViewModel>();
 
     return Scaffold(appBar: _appBar(), body: _body());
   }

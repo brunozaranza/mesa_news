@@ -1,20 +1,23 @@
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/model/api_response.dart';
 import 'package:mesa_news/core/model/news.dart';
-import 'package:mesa_news/core/repository/database/database.dart';
-import 'package:mesa_news/core/repository/service/inews_service.dart';
+import 'package:mesa_news/core/repository/database/shared.dart';
+import 'package:mesa_news/core/repository/service/news_service.dart';
 import 'package:mesa_news/core/store/filter_store.dart';
 import 'package:mesa_news/core/store/news_store.dart';
 import 'package:mesa_news/core/store/user_store.dart';
 import 'package:mesa_news/core/util/navigator_util.dart';
-import 'package:mesa_news/core/viewmodel/inews_viewmodel.dart';
+import 'package:mesa_news/core/viewmodel/base_viewmodel_contract.dart';
+import 'package:mesa_news/locator.dart';
 
-class NewsViewModel implements INewsViewModel {
+class NewsViewModel implements BaseViewModelContract {
+
   @override
+  void dispose() {}
+
   Future<ApiResponse<News>> fetchList(
       {int currentPage, int perPage, String publishedAt}) async {
-    ApiResponse<News> response = await GetIt.I<INewsService>().fetchList(
-        token: GetIt.I<UserStore>().user.token,
+    ApiResponse<News> response = await getServiceLocator<NewsService>().fetchList(
+        token: getServiceLocator<UserStore>().user.token,
         currentPage: currentPage,
         perPage: perPage,
         publishedAt: publishedAt);
@@ -31,8 +34,8 @@ class NewsViewModel implements INewsViewModel {
     for (NewsItem item in news.news) {
       if (item.highlight) list.add(item);
     }
-    GetIt.I<NewsStore>().setHighlightsNews(list);
-    GetIt.I<NewsStore>().setNews(news.news);
+    getServiceLocator<NewsStore>().setHighlightsNews(list);
+    getServiceLocator<NewsStore>().setNews(news.news);
   }
 
   _updateWithFavorites(News news) async {
@@ -43,33 +46,26 @@ class NewsViewModel implements INewsViewModel {
     }
   }
 
-  @override
-  List<NewsItem> get highlightsNews => GetIt.I<NewsStore>().highlightsNews;
+  List<NewsItem> get highlightsNews => getServiceLocator<NewsStore>().highlightsNews;
 
-  @override
   List<NewsItem> get news {
-    bool isFavoriteSelected = GetIt.I<FilterStore>().isJustFavorites;
+    bool isFavoriteSelected = getServiceLocator<FilterStore>().isJustFavorites;
 
-    if (!isFavoriteSelected) return GetIt.I<NewsStore>().news;
+    if (!isFavoriteSelected) return getServiceLocator<NewsStore>().news;
 
     List<NewsItem> list = List();
 
-    for (NewsItem item in GetIt.I<NewsStore>().news) {
+    for (NewsItem item in getServiceLocator<NewsStore>().news) {
       if (item.favorite?? false) list.add(item);
     }
 
     return list;
   }
 
-  @override
-  NewsItem get newSelected => GetIt.I<NewsStore>().newSelected;
+  NewsItem get newSelected => getServiceLocator<NewsStore>().newSelected;
 
-  @override
   void onNewItemPressed(item) {
-    GetIt.I<NewsStore>().setNewSelected(item);
+    getServiceLocator<NewsStore>().setNewSelected(item);
     navigateTo(route: '/feed/new');
   }
-
-  @override
-  void dispose() {}
 }

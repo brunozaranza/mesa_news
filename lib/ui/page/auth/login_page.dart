@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mesa_news/core/constant.dart';
 import 'package:mesa_news/core/model/api_response.dart';
 import 'package:mesa_news/core/model/user.dart';
 import 'package:mesa_news/core/util/dialog_util.dart';
-import 'package:mesa_news/core/viewmodel/iauth_viewmodel.dart';
+import 'package:mesa_news/core/viewmodel/auth_viewmodel.dart';
+import 'package:mesa_news/locator.dart';
 import 'package:mesa_news/ui/custom/mesa_button.dart';
 import 'package:mesa_news/ui/view/loading_view.dart';
 
@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  IAuthViewModel _viewModel;
+  AuthViewModel _viewModel;
   bool isFacebookLoading = false;
 
   _img() {
@@ -85,10 +85,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    _viewModel = GetIt.I<IAuthViewModel>();
+    _viewModel = getServiceLocator<AuthViewModel>();
 
     return FutureBuilder(
-        future: GetIt.I<IAuthViewModel>().checkUserExist(),
+        future: _viewModel.checkUserExist(),
         builder: (_, snap) {
           if (!snap.hasData) {
             return Scaffold(
